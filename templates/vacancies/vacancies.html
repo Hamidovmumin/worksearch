@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="row">
+
+        <!-- Sol tərəf: Kateqoriyalar -->
+        <div class="col-md-4 col-lg-3">
+            <h5 class="fw-bold mb-3">Kateqoriyalar</h5>
+
+            <ul class="list-group small">
+                <a class="list-group-item list-group-item-action py-1 category-item"
+                   href="{% url 'vacancies:vacancies' %}" style="border-color: #0d6efd">
+                    <div class="d-flex align-items-center">
+                        <div class="col-3 d-flex justify-content-center">
+                            <i class="bi bi-list-ul" style="font-size: 30px; color: #CFDB0C;"></i>
+                        </div>
+
+                        <div class="col-8 d-flex flex-column align-items-center justify-content-center text-center">
+                            <h6 class="fw-bold mb-1">Bütün vakansiyalar</h6>
+                            <small class="text-muted">{{ count }} vakansiya</small>
+                        </div>
+                    </div>
+                </a>
+                {% for c in category %}
+                <a class="list-group-item list-group-item-action py-1 category-item"
+                   href="{% url 'vacancies:vacancies_by_category' c.id %}" style="border-color: #0d6efd">
+                    <div class="d-flex align-items-center">
+                        <div class="col-3 d-flex justify-content-center">
+                            <i class="bi {{ c.icons }}" style="font-size: 30px; color:{{ c.icon_color }};"></i>
+                        </div>
+
+                        <div class="col-8 d-flex flex-column align-items-center justify-content-center text-center">
+                            <h6 class="fw-bold mb-1">{{ c.name }}</h6>
+                            <small class="text-muted">{{c.vacancy_count}} vakansiya</small>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+        <!--========================================================================================================================-->
+        <!-- Sağ tərəf: Vakansiyalar -->
+        <div class="col-md-9 col-lg-9">
+            <div class="row g-3">
+                {% if not vacancy %}
+                    <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+                        <p class="text-muted fw-bold fs-1">Vakansiya Yoxdur 😕</p>
+                    </div>
+                {% else %}
+                <!-- Kart  -->
+                    {% for v in vacancy %}
+                        <div class="col-md-4">
+                            <div class="card shadow-sm h-100 category-item" style="border-color: #0d6efd">
+                                <div class="card-body ">
+                                    <span class="badge {{v.category_vacancy.style}} mb-2">{{v.category_vacancy.name}}</span>
+                                    <h5 class="card-title">{{v.vacancy_name}}</h5>
+                                    <p class="text-muted">{{v.company_name}} — {{v.location_work}}
+                                        <span class="badge-tag p-sm-3">
+                                                <i class="bi bi-eye me-1"></i>{{ v.views }}
+                                            </span>
+                                    </p>
+                                    <a href="{% url 'vacancies:vacancy_detail' v.id %}"
+                                       class="btn btn-primary w-100">Ətraflı</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                 <nav class="mt-4" aria-label="Page navigation sample">
+    {% if vacancy.has_other_pages %}
+        <ul class="pagination">
+            {% if vacancy.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{vacancy.previous_page_number}}" aria-label="Previous">
+                    <span ria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for i in vacancy.paginator.page_range %}
+                {% if vacancy.number == i %}
+                    <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if vacancy.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{vacancy.next_page_number}}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+</nav>
+            </div>
+        </div>
+        <!--========================================================================================================================-->
+    </div>
+</div>
+
+
+
+
+<style>
+    .category-item {
+        transition: 0.30s;
+        cursor: pointer;
+    }
+
+    .category-item:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+    }
+</style>
+
+{% endblock %}

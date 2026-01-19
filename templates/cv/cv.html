@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<style>
+    body {
+        background-color: #fff;
+    }
+    .step-list li {
+        list-style: none;
+        margin-bottom: 8px;
+        color: #999;
+    }
+    .step-list li.active {
+        color: #000;
+        font-weight: 200;
+    }
+    .custom-input {
+        border-radius: 14px;
+        padding: 6px;
+        border: 2px solid #f0f0f0;
+        max-width: 400px;
+        margin-bottom: 15px;
+    }
+    .custom-input:focus {
+        border-color: #f7b500;
+        box-shadow: none;
+    }
+
+
+    .progress-bar {
+    background-color: #f7b500;
+    width: 0;
+    animation: progressLoad 1s ease forwards; /* 2 saniyə */
+}
+
+@keyframes progressLoad {
+    from {
+        width: 0%;
+    }
+    to {
+        width: {{width}}%; /* nə qədər dolsun istəyirsənsə */
+    }
+}
+
+    .btn-next {
+        background-color: #2c2c2c;
+        color: #b8daff;
+        border-radius: 24px;
+        padding: 10px 28px;
+    }
+
+    /* Əsas dəyişiklik: step-ləri gizlətmək */
+    .step {
+        display: none;
+    }
+    .step.active {
+        display: block;
+    }
+
+    .step-list li.done {
+    color: #28a745;        /* yaşıl */
+    font-weight: 600;
+}
+
+.step-list li.active {
+    color: #28a745;
+    font-weight: 700;
+}
+
+
+.gender-group {
+    display: flex;
+    gap: 12px;
+}
+
+/* radio-ları gizlədirik */
+.gender-group input[type="radio"] {
+    display: none;
+}
+
+/* label button görünüşü */
+.gender-btn {
+    padding: 10px 22px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    background-color: #f5f6fa;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+/* seçilmiş radio */
+.gender-group input[type="radio"]:checked + .gender-btn {
+    background-color: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+}
+.gender-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 48px; /* input hündürlüyü */
+    padding-left: 8px;
+}
+
+
+</style>
+
+<div class="container-fluid mt-4">
+    <div class="row">
+
+        <!-- Sol sidebar -->
+        <div class="col-md-3 ps-5">
+            <h5 class="mb-4">Rezümə yerləşdirmə</h5>
+           <ul class="step-list p-0">
+                {% for i, title in steps.items %}
+                    <li
+                        {% if i in completed_steps %}
+                            class="completed"
+                        {% elif i == step %}
+                            class="active"
+                        {% endif %}
+                    >
+                    {{ i }} &nbsp; {{ title }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Sağ content -->
+        <div class="col-md-6">
+            <!-- Progress -->
+            <div class="justify-content-center row mt-8 px-5">
+                <div class="col-md-15">
+                    <div class="progress" style="height:6px;">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <small class="text-muted" id="stepCounter">{{ step }} / 7</small>
+                </div>
+
+            </div>
+            {% if step == 1 %}
+                <form method="post" action="?step=1">
+                    {% csrf_token %}
+                    <label class="form-label"><strong>Peşə və ya vəzifə</strong> <strong style="color: red;max-height: 10px"> *</strong></label>
+                    <input type="text" name="vacancy" class="form-control custom-input ms-3 p-sm-3" placeholder="Vəzifə">
+
+                    <label class="form-label"><strong>Gözlənilən maaş</strong> <strong style="color: red"> *</strong></label>
+                    <input type="number" name="salary" class="form-control custom-input ms-3 p-sm-3" placeholder="Maaş">
+
+                    <label class="form-label"><strong>İxtisas</strong> <strotng style="color: red"> *</strotng></label>
+                    <input type="text" name="specialty" class="form-control custom-input ms-3 p-sm-3" placeholder="İxtisas">
+
+                    <button type="submit" class="btn btn-next">Davam et</button>
+                </form>
+            {% endif %}
+
+            {% if step == 2 %}
+            <form method="post" action="?step=2">
+                {% csrf_token %}
+                 <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>Ad</strong> <strong style="color: red"> *</strong></label>
+                        <input type="text" name="name" class="form-control custom-input ms-3 p-sm-3" placeholder="Ad">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>Soyad</strong> <strong style="color: red"> *</strong></label>
+                        <input type="text" name="lastName" class="form-control custom-input ms-3 p-sm-3" placeholder="Soyad">
+                    </div>
+                </div>
+
+                 <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>Ata adı</strong> <strong style="color: red"> *</strong></label>
+                        <input type="text" name="name" class="form-control custom-input ms-3 p-sm-3" placeholder="Ad">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><strong>Soyad</strong> <strong style="color: red"> *</strong></label>
+                        <input type="date" name="lastName" class="form-control custom-input ms-3 p-sm-3" placeholder="Soyad">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="form-label"><strong>Cins</strong></label>
+                    <!-- input ölçüsündə konteyner -->
+                    <div class="gender-wrapper gender-group">
+                        <input type="radio" name="gender" id="male" checked>
+                        <label for="male" class="gender-btn">Kişi</label>
+
+                        <input type="radio" name="gender" id="female">
+                        <label for="female" class="gender-btn">Qadın</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-next p-ms-5">Davam et</button>
+            </form>
+            {% endif %}
+        </div>
+
+         {% if step > 1 %}
+            <form  class="" method="get" action="#">
+                <button type="submit" class="btn btn-next ">Geriyə qayıt</button>
+            </form>
+         {% endif %}
+    </div>
+</div>
+
+<!--<script>-->
+<!--let currentStep = 0;-->
+<!--const steps = document.querySelectorAll(".step");-->
+<!--const stepItems = document.querySelectorAll(".step-list li");-->
+<!--const progressBar = document.querySelector(".progress-bar");-->
+<!--const stepCounter = document.getElementById("stepCounter");-->
+
+<!--function showStep(index) {-->
+<!--    steps.forEach((step, i) => {-->
+<!--        step.classList.toggle("active", i === index);-->
+<!--        stepItems[i].classList.toggle("active", i === index);-->
+<!--    });-->
+
+<!--    stepCounter.innerText = `${index + 1}/${steps.length}`;-->
+<!--    progressBar.style.width = `${((index + 1) / steps.length) * 100}%`;-->
+<!--}-->
+
+<!--function nextStep() {-->
+<!--    if (currentStep < steps.length - 1) {-->
+<!--        currentStep++;-->
+<!--        showStep(currentStep);-->
+<!--    }-->
+<!--}-->
+
+<!--function prevStep() {-->
+<!--    if (currentStep > 0) {-->
+<!--        currentStep&#45;&#45;;-->
+<!--        showStep(currentStep);-->
+<!--    }-->
+<!--}-->
+<!--</script>-->
+
+{% endblock %}

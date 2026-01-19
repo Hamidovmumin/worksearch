@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero text-center">
+    <div class="container">
+        <h1 class="fw-bold" style="font-size: 45px;">🏣 Şirkətlər</h1>
+    </div>
+</section>
+
+<!-- JOB LIST -->
+<div class="container my-5">
+    <div class="row g-4">
+        {% for c in company %}
+        <div class="col-md-3">
+            <div class="btn btn-outline-primary card job-card p-4 text-center job-card" style="border-color: #0d6efd">
+                <div class="d-flex justify-content-center mb-3">
+                    <div class="rounded-circle bg-light d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 80px; border: 2px solid #e6e6e6;">
+                        <img src="{{ c.image.url }}" alt="Logo" class="rounded-circle" style="width:60px;">
+                    </div>
+                </div>
+
+                <h5 class="fw-bold">{{ c.name }}</h5>
+                <a href="{% url 'companies:company_by_vacancy' c.id %}" class="btn btn-outline-warning w-100 fw-semibold">Şirkətə aid vakansiyalar</a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+    <style>
+         .hero {
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            padding: 20px 0;
+            color: #fff;
+        }
+        .job-card {
+            border-radius: 14px;
+            transition: 0.25s;
+
+        }
+        .job-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 6px 22px rgba(0,0,0,0.15);
+        }
+    </style>
+</div>
+
+{% endblock %}
+

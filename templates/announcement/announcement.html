@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h4 class="fw-bold mb-4">Elan yerləşdir</h4>
+
+        <form method="post" action="{% url 'payment:payment_form' %}">
+            {% csrf_token %}
+            <!-- Vakansiya adı və şirkət e-poçtu -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Vakansiya adı<strong style="color: red"> *</strong></label>
+                    <input type="text" name="vacancy_name" value="{{ vacancy_name }}" class="form-control form-control-sm" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Şirkət e-poçtu<strong style="color: red"> *</strong></label>
+                    <input type="text" name="company_email" class="form-control form-control-sm" value="{{ company_email }}" required>
+                </div>
+            </div>
+
+            <!-- Şirkət və kateqoriya -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Şirkət <strong style="color: red"> *</strong></label>
+                    <select name="company_name" class="form-select form-select-sm" required>
+                         <option name="company_name" class="form-control form-control-sm"></option>
+                        {% for company in company %}
+                            <option name="company_name" class="form-control form-control-sm" value="{{ company.id }}">{{ company.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Kateqoriya <strong style="color: red"> *</strong></label>
+                    <select name="category_vacancy" class="form-select form-select-sm" required>
+                        <option name="category_vacancy" class="form-control form-control-sm"></option>
+                        {% for c in category %}
+                            <option value="{{ c.id }}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- İş tipi və maaş -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">İş tipi <strong style="color: red"> *</strong></label>
+                    <select name="type_work" class="form-select form-select-sm" required>
+                        <option name="type_work" class="form-control form-control-sm"></option>
+                        {% for wt in work_type %}
+                            <option value="{{ wt.id }}">{{ wt.type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Maaş <strong style="color: red"> *</strong></label>
+                    <input type="text" name="salary" class="form-control form-control-sm" value="{{ salary }}" required>
+                </div>
+            </div>
+
+            <!-- Maaş növü və iş yeri -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Maaş növü <strong style="color: red"> *</strong></label>
+                    <input type="text" name="salary_type" class="form-control form-select-sm"
+                           placeholder="AZN / USD / ERO" value="{{ salary_type }}" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">İş yeri <strong style="color: red"> *</strong></label>
+                    <input type="text" name="location_work" class="form-control form-control-sm" value="{{ location_work }}" required>
+                </div>
+            </div>
+
+            <!-- Vakansiya təsviri -->
+            <div class="mb-3">
+                <label class="form-label">Vakansiya təsviri <strong style="color: red"> *</strong></label>
+                <textarea name="vacancy_description" class="form-control form-control-sm" rows="7"  required></textarea>
+            </div>
+
+            <!-- Tələblər -->
+            <div class="mb-3">
+                <label class="form-label">Tələblər <strong style="color: red"> *</strong></label>
+                <textarea name="requirements" class="form-control form-control-sm" rows="7"
+                          placeholder="Hər tələbi yeni sətirdə yazın"  required></textarea>
+            </div>
+
+            <!-- Deadline -->
+            <div class="mb-3">
+                <label class="form-label">Son müraciət tarixi</label>
+                <input type="date" name="deadline" class="form-control" style="max-width: 150px;">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm w-100">
+                <i class="bi bi-send"></i> Elanı yerləşdir
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Ümumi input stilləri */
+    .form-control, .form-select, textarea {
+        border-radius: 0.5rem; /* yuvarlaq künclər */
+        border: 1px solid #ced4da; /* yüngül border */
+        padding: 0.4rem 0.8rem; /* iç boşluq */
+        transition: all 0.2s ease-in-out;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Focus zamanı */
+    .form-control:focus, .form-select:focus, textarea:focus {
+        border-color: #6610f2; /* bənövşəyi border */
+        box-shadow: 0 0 0 0.2rem rgba(102, 16, 242, 0.25);
+        outline: none;
+
+    }
+
+    /* Hover zamanı */
+    .form-control:hover, .form-select:hover, textarea:hover {
+        border-color: #0d6efd;
+    }
+
+    /* Button */
+    .btn-primary {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #6610f2;
+        border-color: #6610f2;
+    }
+
+    /* Card form */
+    .card {
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+
+{% endblock %}

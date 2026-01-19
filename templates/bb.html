@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<style>
+    body {
+        background-color: #fff;
+    }
+    .step-list li {
+        list-style: none;
+        margin-bottom: 16px;
+        color: #999;
+    }
+    .step-list li.active {
+        color: #000;
+        font-weight: 600;
+    }
+    .custom-input {
+        border-radius: 14px;
+        padding: 16px;
+        border: 2px solid #f0f0f0;
+    }
+    .custom-input:focus {
+        border-color: #f7b500;
+        box-shadow: none;
+    }
+
+
+    .progress-bar {
+    background-color: #f7b500;
+    width: 0;
+    animation: progressLoad 1s ease forwards; /* 2 saniyə */
+}
+
+@keyframes progressLoad {
+    from {
+        width: 0%;
+    }
+    to {
+        width: {{width}}%; /* nə qədər dolsun istəyirsənsə */
+    }
+}
+
+    .btn-next {
+        background-color: #2c2c2c;
+        color: #b8daff;
+        border-radius: 24px;
+        padding: 10px 28px;
+    }
+
+    /* Əsas dəyişiklik: step-ləri gizlətmək */
+    .step {
+        display: none;
+    }
+    .step.active {
+        display: block;
+    }
+
+    .step-list li.done {
+    color: #28a745;        /* yaşıl */
+    font-weight: 600;
+}
+
+.step-list li.active {
+    color: #28a745;
+    font-weight: 700;
+}
+
+</style>
+
+<div class="container-fluid mt-4">
+    <div class="row">
+
+        <!-- Sol sidebar -->
+        <div class="col-md-3 ps-5">
+            <h5 class="mb-4">Rezümə yerləşdirmə</h5>
+           <ul class="step-list p-0">
+                {% for i, title in steps.items %}
+                    <li
+                        {% if i in completed_steps %}
+                            class="completed"
+                        {% elif i == step %}
+                            class="active"
+                        {% endif %}
+                    >
+                    {{ i }} &nbsp; {{ title }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Sağ content -->
+        <div class="col-md-6">
+            <!-- Progress -->
+            <div class="justify-content-center row mt-8 px-5">
+                <div class="col-md-15">
+                    <div class="progress" style="height:6px;">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <small class="text-muted" id="stepCounter">{{ step }} / 7</small>
+                </div>
+
+            </div>
+
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-next">Davam et</button>
+        </form>
+        </div>
+         {% if step > 1 %}
+            <form  class="" method="get" action="{% url 'cv:cv' step=prev_step %}">
+                <button type="submit" class="btn btn-next">Geriyə qayıt</button>
+            </form>
+         {% endif %}
+    </div>
+</div>
+
+<!--<script>-->
+<!--let currentStep = 0;-->
+<!--const steps = document.querySelectorAll(".step");-->
+<!--const stepItems = document.querySelectorAll(".step-list li");-->
+<!--const progressBar = document.querySelector(".progress-bar");-->
+<!--const stepCounter = document.getElementById("stepCounter");-->
+
+<!--function showStep(index) {-->
+<!--    steps.forEach((step, i) => {-->
+<!--        step.classList.toggle("active", i === index);-->
+<!--        stepItems[i].classList.toggle("active", i === index);-->
+<!--    });-->
+
+<!--    stepCounter.innerText = `${index + 1}/${steps.length}`;-->
+<!--    progressBar.style.width = `${((index + 1) / steps.length) * 100}%`;-->
+<!--}-->
+
+<!--function nextStep() {-->
+<!--    if (currentStep < steps.length - 1) {-->
+<!--        currentStep++;-->
+<!--        showStep(currentStep);-->
+<!--    }-->
+<!--}-->
+
+<!--function prevStep() {-->
+<!--    if (currentStep > 0) {-->
+<!--        currentStep&#45;&#45;;-->
+<!--        showStep(currentStep);-->
+<!--    }-->
+<!--}-->
+<!--</script>-->
+
+{% endblock %}

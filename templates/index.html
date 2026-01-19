@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<head>
+    <style>
+        body {
+            background: #f5f5f5;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            padding: 90px 0;
+            color: #fff;
+        }
+
+        .search-box {
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-card {
+            border-radius: 14px;
+            transition: 0.25s;
+            border-color: #0d6efd
+        }
+
+        .job-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 6px 22px rgba(0, 0, 1, 0.45);
+        }
+
+        .company-logo {
+            width: 55px;
+            height: 55px;
+            background: #eee;
+            border-radius: 50%;
+        }
+
+    </style>
+</head>
+<!-- HERO -->
+<section class="hero text-center">
+    <div class="container">
+
+        <h1 class="fw-bold" style="font-size: 45px;">Minlərlə İş Elanını Tap</h1>
+        <p class="lead mt-3">İT, marketinq, dizayn və digər sahələr üzrə ən son vakansiyalar</p>
+        <form action="{% url 'search' %}" method="GET">
+            {% csrf_token %}
+            <div class="row justify-content-center">
+                <div class="col-md-4 mb-2">
+                    <input type="text" class="form-control" placeholder="Vəzifə adı" name="keyword1" value="{{ search1 }}">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input type="text" class="form-control" placeholder="Şəhər" name="keyword2" value="{{ search2 }}">
+                </div>
+                <div class="col-md-2 mb-2">
+                    <button type="submit" class="btn btn-light w-100 fw-semibold"><i class="bi bi-search"></i> Axtar</button>
+                </div>
+            </div>
+        </form>
+</section>
+
+<!-- JOB LIST -->
+<div class="container my-5">
+    <h3 class="fw-bold mb-4 text-center">🔥 Son Vakansiyalar</h3>
+
+    <div class="row g-4">
+        <!-- Job Card -->
+        {% if not vacancy %}
+            <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+                <p class="text-muted fw-bold fs-1">Vakansiya Yoxdur 😕</p>
+            </div>
+        {% else %}
+            {% for v in vacancy %}
+            <div class="col-md-4 ">
+                <div class="card job-card p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{{ v.company_name.image.url }}" alt="Logo" class="company-logo me-3">
+                        <div>
+                            <h5 class="fw-bold mb-0">{{ v.vacancy_name }}</h5>
+                            <small class="text-muted">{{ v.company_name }}</small>
+                        </div>
+                    </div>
+
+
+                    <p class="text-muted mb-1"><i class="bi bi-geo-alt"></i> {{ v.location_work }}</p>
+                    <span class="badge-tag"><i class="bi bi-clock-history me-1"></i>{{ v.created_at|timesince }} əvvəl</span>
+
+                    <p class="text-muted mb-1"><i class="bi bi-cash"></i> {{ v.salary }} / {{ v.salary_type }}</p>
+                    <span class="badge {{ v.type_work.style }} mb-3">{{ v.type_work.type }}</span>
+
+                    <a href="{% url 'vacancies:vacancy_detail' v.id %}" class="btn btn-outline-primary w-100 fw-semibold">Ətraflı Bax</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

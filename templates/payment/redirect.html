@@ -1,0 +1,10 @@
+<h3>Ödəniş test səhifəsi</h3>
+<p>Ödəniş ID: {{ payment_id }}</p>
+<p>Məbləğ: {{ amount }} AZN</p>
+
+<form method="post" action="{% url 'payment:callback' %}">
+    {% csrf_token %}
+    <input type="hidden" name="payment_id" value="{{ payment_id }}">
+    <button type="submit" name="status" value="success" class="btn btn-success">Ödəniş Uğurlu</button>
+    <button type="submit" name="status" value="failed" class="btn btn-danger">Ödəniş Uğursuz</button>
+</form>
